@@ -6,9 +6,8 @@ import joblib
 import os
 
 
-# ============================================================
+
 # APP
-# ============================================================
 
 app = FastAPI(
     title="Mental Health Risk Prediction API"
@@ -24,9 +23,9 @@ app.add_middleware(
 )
 
 
-# ============================================================
+
+
 # MODEL
-# ============================================================
 
 BASE_DIR = os.path.dirname(
     os.path.dirname(
@@ -43,9 +42,9 @@ MODEL_PATH = os.path.join(
 model = joblib.load(MODEL_PATH)
 
 
-# ============================================================
+
+
 # MAPPINGS
-# ============================================================
 
 frequency_mapping = {
     "Never": 0,
@@ -92,9 +91,9 @@ study_mapping = {
 }
 
 
-# ============================================================
+
+
 # REQUEST MODEL
-# ============================================================
 
 class SurveyData(BaseModel):
 
@@ -123,9 +122,9 @@ class SurveyData(BaseModel):
     personal_responsibilities: str
 
 
-# ============================================================
+
+
 # RECOMMENDATIONS
-# ============================================================
 
 def generate_recommendations(data):
 
@@ -289,9 +288,9 @@ def generate_recommendations(data):
     return factors, recommendations
 
 
-# ============================================================
+
+
 # PREDICT ENDPOINT
-# ============================================================
 
 @app.post("/predict")
 def predict(data: SurveyData):
@@ -317,9 +316,9 @@ def predict(data: SurveyData):
     ]
 
 
-    # ========================================================
+
+
     # FEATURE ENGINEERING
-    # ========================================================
 
     lifestyle_score = (
         (data.sleep_quality / 5)
@@ -337,9 +336,9 @@ def predict(data: SurveyData):
     )
 
 
-    # ========================================================
+
+
     # MODEL DATA
-    # ========================================================
 
     new_data = pd.DataFrame([{
 
@@ -408,18 +407,17 @@ def predict(data: SurveyData):
     }])
 
 
-    # ========================================================
+
+ 
     # PREDICTION
-    # ========================================================
 
     prediction = model.predict(new_data)
 
     risk = str(prediction[0])
 
 
-    # ========================================================
+
     # PROBABILITY
-    # ========================================================
 
     probabilities = {}
 
@@ -440,18 +438,16 @@ def predict(data: SurveyData):
             )
 
 
-    # ========================================================
+
     # RECOMMENDATIONS
-    # ========================================================
 
     factors, recommendations = generate_recommendations(
         data
     )
 
 
-    # ========================================================
-    # RETURN
-    # ========================================================
+
+    # RETURN 
 
     return {
 
@@ -475,9 +471,8 @@ def predict(data: SurveyData):
     }
 
 
-# ============================================================
+
 # HEALTH CHECK
-# ============================================================
 
 @app.get("/")
 def home():
